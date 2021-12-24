@@ -37,16 +37,16 @@ void setup() {
  delay(200); 
  Serial.println("AltSoftSerial Test Begin");
  altSerial.begin(9600);
- while(!altSerial.available()){               // Зацикливаем и ждем инициализацию SIM800L
+ while(!altSerial.available()){               // Init SIM800L
     altSerial.println("AT");                   
     delay(1000);                              
     Serial.println("Connecting…");             
   }
   Serial.println("Connected!");               
   delay(20000); 
-  altSerial.println("AT+CMGF=1");             // Отправка команды AT+CMGF=1
+  altSerial.println("AT+CMGF=1");             // Send AT+CMGF=1
   delay(1000);                                 
-  altSerial.println("AT+CNMI=1,2,0,0,0");     // Отправка команды AT+CNMI=1,2,0,0,0
+  altSerial.println("AT+CNMI=1,2,0,0,0");     // Modes AT+CNMI=1,2,0,0,0
   delay(1000);                                 
   altSerial.println("AT+CMGL=\"REC UNREAD\""); 
   delay(1000);  
