@@ -3,6 +3,7 @@
 #include <Wire.h>
 #include <stdio.h>
 #include <string.h>
+#define CODESMS "MISH"
 
  char incomingByte; 
  String inputString;
@@ -12,6 +13,7 @@
  char outnum [15];
  String number;
  float t;
+
  
 
  void sms(String text, String phone)  // Процедура Отправка SMS
@@ -75,7 +77,7 @@ void loop() {
          inputString += incomingByte;              
       }   
        delay(50);                                
-       if (inputString.indexOf("MISH") > -1)  {   
+       if (inputString.indexOf(CODESMS) > -1)  {   
           Serial.println(inputString);
           int res=parseNum(inputString.c_str());
 
