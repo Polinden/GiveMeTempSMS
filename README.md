@@ -8,9 +8,9 @@
 
 A friend of mine has got a countryside house.
 He wants to control a boiler, especially in winter.
-But the house is distant and not covered by Internet.
+But the house is distant and Internet is not provided.
 So we designed a device which replies on a code SMS with 
-required information. In my friends' case, with temperature measured.
+requested information. In my friends' case, with temperature measured.
 
 ## INGREDIENTS
 
@@ -20,3 +20,4 @@ required information. In my friends' case, with temperature measured.
 - Power supply and miscellaneous
 
 ## Enjoy
+We hope you will be interested in repeating this project
