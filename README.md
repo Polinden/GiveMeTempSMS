@@ -1,4 +1,4 @@
-# GiveMeTemtSMS
+# GiveMeTempSMS
 
 
 
