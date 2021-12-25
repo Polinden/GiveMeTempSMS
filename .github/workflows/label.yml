@@ -1,18 +1,39 @@
-name: Newman Run
-
+name: Test-Build
 on:
   push:
     branches:
-    - master
-
+      - master
 jobs:
-  newman:
+  test-api:
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@master
-        with:
-           apiKey: ${{ PMAK-61c6df6aeb51ae005130e251-95851870cf098947a518f94bc478143864 }}
-           collection: ac0ecb85f21d0821c3df
-           reporters: cli
-      - name: Output summary to console
-        run: echo ${{ steps.run-newman.outputs.summary }}
+    # Checks-out your repository under $GITHUB_WORKSPACE, so your job can access it
+    - uses: actions/checkout@v2
+      
+    # INstall Node on the runner
+    - name: Install Node
+      uses: actions/setup-node@v1
+      with: 
+        node-version: '12.x'
+    
+    # Install the newman command line utility and also install the html extra reporter
+    - name: Install newman
+      run: |
+       npm install -g newman
+       npm install -g newman-reporter-htmlextra
+
+    # Make directory to upload the test results
+    - name: Make Directory for results
+      run: mkdir -p testResults
+
+
+    # Run the POSTMAN collection
+    - name: Run POSTMAN collection
+      run: |
+         newman run https://www.getpostman.com/collections/ac0ecb85f21d0821c3df
+    # Upload the contents of Test Results directory to workspace
+    - name: Output the run Details
+      uses: actions/upload-artifact@v2
+      with: 
+       name: RunReports
+       path: testResults
