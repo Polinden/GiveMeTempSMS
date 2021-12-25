@@ -3,16 +3,14 @@ name: Newman Run
 on:
   push:
     branches:
-    - master
+    - main
 
 jobs:
   newman:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@master
+      - uses: matt-ball/newman-action@master
         with:
-           apiKey: ${{ PMAK-61c6df6aeb51ae005130e251-95851870cf098947a518f94bc478143864 }}
-           collection: ac0ecb85f21d0821c3df
-           reporters: cli
-      - name: Output summary to console
-        run: echo ${{ steps.run-newman.outputs.summary }}
+          apiKey: ${{ PMAK-61c6df6aeb51ae005130e251-3b531a979ce65abf46ee609e99e326342c }}
+          collection: ac0ecb85f21d0821c3df
