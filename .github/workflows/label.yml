@@ -12,5 +12,4 @@ jobs:
       - uses: actions/checkout@master
       - uses: matt-ball/newman-action@master
         with:
-          apiKey: PMAK-61c6df6aeb51ae005130e251-3b531a979ce65abf46ee609e99e326342c 
           collection: ac0ecb85f21d0821c3df
