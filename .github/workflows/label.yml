@@ -13,3 +13,4 @@ jobs:
       - uses: matt-ball/newman-action@master
         with:
           collection: ac0ecb85f21d0821c3df
+          apiKey: PMAK-61c7434569eed9004764131c-f1109437f0cf89fd0b2238bef5acedec42
