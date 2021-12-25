@@ -16,7 +16,7 @@
 
  
 
- void sms(String text, String phone)  // Процедура Отправка SMS
+ void sms(String text, String phone)  
  {
    Serial.println("SMS send started");
    altSerial.println("AT+CMGS=\"" + phone + "\"");
