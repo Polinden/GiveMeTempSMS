@@ -13,8 +13,10 @@
  AltSoftSerial altSerial;
  DFRobot_SHT20 sht20;
  const char * pat1="+380";
+ const char * pat2="+CBC:";
  char outnum [15];
  String number;
+ String voltage;
  float t;
 
  
@@ -57,6 +59,7 @@ void setup() {
   delay(1000);  
   altSerial.println("AT+GSMBUSY=1");  //No call
   delay(1000);
+  Serial.println("Setup finished! Working cycle...");
 }
 
 
@@ -66,7 +69,24 @@ int parseNum(char * s1){
   s = strstr(s1, pat1);
   if(s) {
     strncpy(number, s, 14);
-    snprintf (outnum, 14, "%s", s);
+    snprintf (outnum, 14, "%s", number);
+    return 1;
+  }
+  else return 0;
+}
+
+
+int parseVolt(char * s1){
+  char * s, * e;
+  char number [14];
+  s = strstr(s1, pat2);
+  s = strstr(s+1, ",");
+  s = strstr(s+1, ",");
+  e = strstr(s+1, "\n");
+  if (byte (e-s)>10) e = s + 10;
+  if(s && e) {
+    strncpy(number, s+1, byte (e-s+1));
+    snprintf (outnum,  byte (e-s+1), "%s", number);
     return 1;
   }
   else return 0;
@@ -106,11 +126,17 @@ void loop() {
           int res=parseNum(inputString.c_str());
           if (res) {
              number=String(outnum);
-             Serial.println(number);
              altSerial.println("AT+CBC");  //Check Voltage  
              delay(1000);
              readData();
-             sms(String(HPHRASE+inputString, String(number));
+             Serial.println(number);
+             Serial.println(inputString);
+             int res=parseVolt(inputString.c_str());
+             if (res) {
+                 voltage=String(outnum);
+                 Serial.println(voltage);
+                 sms(HPHRASE+voltage, String(number));
+             }
           } 
        }
        //Clear SMSs and buffer
