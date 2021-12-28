@@ -5,33 +5,38 @@
 #include <string.h>
 #define CODESMS "MISH"
 #define CODEHEALTH "VOLT"
-#define PHRASE "Hello, Dude! Temp="
-#define HPHRASE "Hello, Dude! Volt="
+#define PHRASE "Hello, Dude! Temp(C)="
+#define HPHRASE "Hello, Dude! Power(mV)="
+#define BUFFSIZE 500
+#define TIMEOUT 10000
 
- char incomingByte; 
- String inputString;
+
  AltSoftSerial altSerial;
  DFRobot_SHT20 sht20;
  const char * pat_num="+380";
  const char * pat_volt="+CBC:";
  char outnum [15];
- String number;
- String voltage;
+ char outvolt [15];
+ char incomingByte; 
+ char inputString [BUFFSIZE+1];
  float t;
 
  
 
  void sms(String text, String phone)  
  {
-   Serial.println("SMS send started");
    altSerial.println("AT+CMGS=\"" + phone + "\"");
-   delay(500);
+   waitOK();
+   readData();
    altSerial.print(text);
-   delay(500);
+   delay(200);
    altSerial.print((char)26);
-   delay(500);
-   Serial.println("SMS send complete");
-   delay(2000);
+   waitOK();
+   readData();
+   #ifdef DEBUG
+    Serial.println("SMS sended");
+   #endif
+   
  } 
 
 void setup() {
@@ -39,27 +44,35 @@ void setup() {
  while (!Serial) ; 
  Serial.println("SHT31 test");
  sht20.initSHT20(); 
- delay(200);
+ delay(300);
  sht20.checkSHT20();
- delay(200); 
- Serial.println("AltSoftSerial Test Begin");
+ delay(300); 
  altSerial.begin(9600);
  while(!altSerial.available()){               
     altSerial.println("AT");                   
-    delay(1000);                              
-    Serial.println("Connecting…");             
+    delay(1000);                                      
   }
-  Serial.println("Connected!");               
-  delay(20000); 
+  Serial.println("Altsoftserial Connected!"); 
+  for (byte i=0; i<20; i++){
+         delay(1000); 
+         Serial.print('.');       
+  }
+  Serial.print('\n');
   altSerial.println("AT+CMGF=1");    //Text mode         
-  delay(1000);                                 
+  waitOK();         
+  readData();                        
   altSerial.println("AT+CNMI=1,2,0,0,1");   //Format read  
-  delay(1000);                                 
+  waitOK();    
+  readData();                             
   altSerial.println("AT+CMGDA=\"DEL ALL\"");  //Clear untread
-  delay(1000);  
+  waitOK();  
+  readData(); 
   altSerial.println("AT+GSMBUSY=1");  //No call
-  delay(1000);
-  Serial.println("Setup finished! Working cycle...");
+  waitOK(); 
+  readData();
+  if (strstr(inputString, "OK")) Serial.println("Setup finished! Working cycle...");
+  else Serial.println("Setup failed! :(");
+  
 }
 
 
@@ -87,7 +100,7 @@ int parseVolt(const char * s1){
   if (s && e && (byte) (e-s)>10) e = s + 10;
   if(s && e) {
     strncpy(number, s+1, (byte) (e-s+1));
-    snprintf (outnum,  (byte) (e-s+1), "%s", number);
+    snprintf (outvolt,  (byte) (e-s+1), "%s", number);
     return 1;
   }
   else return 0;
@@ -95,55 +108,79 @@ int parseVolt(const char * s1){
 
 
 void readData(){
-      inputString="";
-      while(altSerial.available()){            
+      int is=0;
+      while(altSerial.available() && is<BUFFSIZE){            
          incomingByte = altSerial.read();          
-         inputString += incomingByte;              
-      }   
-      delay(200);
+         inputString[is++] = incomingByte;              
+      }  
+      inputString[is]='\0';
+}
+
+
+void waitOK(){
+  unsigned long _timeout = millis() + TIMEOUT;
+  while (!altSerial.available() && millis() < _timeout)  {};  
+  delay(300);                                         
 }
 
 
 void loop() {   
    if(altSerial.available()){   
-       t = sht20.readTemperature();             
-       delay(200);                             
+       t = sht20.readTemperature();  
+       waitOK();                                     
        readData();   
        //Case1 (command to measure)         
-       if (inputString.indexOf(CODESMS) > -1)  {   
-          Serial.println(inputString);
-
-          int res=parseNum(inputString.c_str());
+       if (strstr(inputString, CODESMS))  { 
+          #ifdef DEBUG
+           Serial.print("input: ");  
+           Serial.write(inputString, strlen(inputString));
+           Serial.print('\n');
+          #endif
+          
+          int res=parseNum(inputString);
           if (res) {
-             number=String(outnum);
-             Serial.println(number);
-             sms(String(PHRASE+String(round(t))), String(number)); 
+            #ifdef DEBUG
+             Serial.print("number: ");
+             Serial.write(outnum, strlen(outnum));
+             Serial.print('\n');
+            #endif       
+             sms(String(PHRASE+String(round(t))), String(outnum)); 
           }
        }
        //Case2 (HealthChech)
-       if (inputString.indexOf(CODEHEALTH) > -1)  {   
-          Serial.println(inputString);
+       if (strstr(inputString, CODEHEALTH))  {   
+         #ifdef DEBUG
+          Serial.print("input: ");  
+          Serial.write(inputString, strlen(inputString));
+          Serial.print('\n');
+         #endif
            
-          int res=parseNum(inputString.c_str());
+          int res=parseNum(inputString);
           if (res) {
-             number=String(outnum);
+            #ifdef DEBUG
+             Serial.print("number: ");
+             Serial.write(outnum, strlen(outnum));
+             Serial.print('\n');
+            #endif        
              altSerial.println("AT+CBC");  //Check Voltage  
-             delay(1000);
+             waitOK();
              readData();
-             Serial.println(number);
-             Serial.println(inputString);
-             int res=parseVolt(inputString.c_str());
+             int res=parseVolt(inputString);
              if (res) {
-                 voltage=String(outnum);
-                 Serial.println(voltage);
-                 sms(HPHRASE+voltage, String(number));
+             #ifdef DEBUG
+              Serial.print("voltage: ");
+              Serial.write(outvolt, strlen(outvolt));
+              Serial.print('\n');
+             #endif  
+              sms(HPHRASE+String(outvolt), String(outnum));
              }
           } 
        }
        //Clear SMSs and buffer
-       if (inputString.indexOf("OK") == -1){    
+       if (!strstr(inputString, "OK")){    
         altSerial.println("AT+CMGDA=\"DEL ALL\"");      
-        delay(1000);
+        waitOK(); 
+        readData();
        }     
     }
 }
