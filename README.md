@@ -32,7 +32,7 @@ You can create any action youself following the snippet bellow
             // - ask sensors to measure
             // - turn on/off relay, etc.  
             // and report to sender
-            sms(String(RESULT, outnum); 
+            sms(String(RESULT), outnum); 
           }
        }
 ```
