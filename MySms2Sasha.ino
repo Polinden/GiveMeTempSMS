@@ -45,7 +45,7 @@
    altSerial.print((char)26);
    waitOK();
    readData();
-   LOG_ON("SMS sended to: ", phones); 
+   LOG_ON("SMS's sent to: ", phones); 
  } 
 
 
