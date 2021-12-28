@@ -63,10 +63,10 @@ void setup() {
 }
 
 
-int parseNum(char * s1){
+int parseNum(const char * s1){
   char * s;
   char number [14];
-  s = strstr(s1, "+CMT:")
+  s = strstr(s1, "+CMT:");
   if (s) s = strstr(s, pat_num);
   if(s) {
     strncpy(number, s, 14);
@@ -77,17 +77,17 @@ int parseNum(char * s1){
 }
 
 
-int parseVolt(char * s1){
+int parseVolt(const char * s1){
   char * s, * e;
   char number [14];
   s = strstr(s1, pat_volt);
-  s = strstr(s+1, ",");
-  s = strstr(s+1, ",");
-  e = strstr(s+1, "\n");
-  if (e-s>10) e = s + 10;
+  if (s) s = strstr(s+1, ",");
+  if (s) s = strstr(s+1, ",");
+  if (s) e = strstr(s+1, "\n");
+  if (s && e && (byte) (e-s)>10) e = s + 10;
   if(s && e) {
-    strncpy(number, s+1, (int) e-s+1);
-    snprintf (outnum,  (int) e-s+1, "%s", number);
+    strncpy(number, s+1, (byte) (e-s+1));
+    snprintf (outnum,  (byte) (e-s+1), "%s", number);
     return 1;
   }
   else return 0;
@@ -100,6 +100,7 @@ void readData(){
          incomingByte = altSerial.read();          
          inputString += incomingByte;              
       }   
+      delay(200);
 }
 
 
