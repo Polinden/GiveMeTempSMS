@@ -3,6 +3,7 @@
 
 <img src="Schema.png" width=500/>
 
+
 ## MOTIVATION
 
 A friend of mine has got a countryside house.
@@ -10,6 +11,7 @@ He wants to control a boiler, especially in winter.
 But the house is distant and Internet is not provided.
 So we designed a device which replies on a code SMS with 
 requested information. In my friends' case, with temperature measured.
+
 
 ## INGREDIENTS
 
