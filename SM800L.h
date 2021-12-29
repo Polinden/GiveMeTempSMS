@@ -17,12 +17,12 @@ class SMSManager {
 
 	public:
 	SMSManager (Stream *stm_w, Stream *stm_d, const char * conf [], int num_str, long timeout) 
-	: sm_w { stm_w },     
+		: sm_w { stm_w },     
 		sm_d { stm_d },
 		timeout { timeout } ,
 		inputString {"\0"},
-    parsed {false}
-    
+		parsed {false}
+
 	{
 		while(!sm_w->available()){               
 			printLn("AT", sm_w);                   
@@ -31,13 +31,13 @@ class SMSManager {
 		for (int i=0; i<num_str; i++){
 			printLn(conf[i], sm_w);                     
 			readData();
-			}
-      if (!strstr(inputString, "OK")) {
-        printLn("Setup failed! :(", sm_d);  
-        printLn(inputString, sm_d);  
-        return; 
-      }
-			printLn("Setup done :)", sm_d);     
+		}
+		if (!strstr(inputString, "OK")) {
+			printLn("Setup failed! :(", sm_d);  
+			printLn(inputString, sm_d);  
+			return; 
+		}
+		printLn("Setup done :)", sm_d);     
 	}
 
 	void sms(String text, const char * phone)  
@@ -51,7 +51,7 @@ class SMSManager {
 		sm_w->print((char)26);
 		readData();
 		if (!strstr(inputString, "OK")) LOG_ON("SMS sended to: ", phone); 
-		else LOG_ON("Error SMS: ", inputString); 
+		else { LOG_ON("Error SMS: ", inputString); }
 	} 
 
 	const char * getNumber(){
@@ -68,9 +68,9 @@ class SMSManager {
 	void readData(){
 		int is=0; 
 		waitOK();
-	  while(sm_w->available() && is<BUFFSIZE){            
-			     incomingByte = sm_w->read();          
-			     inputString[is++] = incomingByte;              
+		while(sm_w->available() && is<BUFFSIZE){            
+			incomingByte = sm_w->read();          
+			inputString[is++] = incomingByte;              
 		}  
 		inputString[is]='\0';
 		LOG_ON("input: ", inputString);  
@@ -79,15 +79,15 @@ class SMSManager {
 
 
 	void checkHealth(){         //Check Voltage  
-    char num [15];
-    char outstr[40];  
-    strcpy(num, getNumber());
+		char num [15];
+		char outstr[40];  
+		strcpy(num, getNumber());
 		printLn("AT+CBC", sm_w);  
 		readData();
-    if (parseVolt()) {
-      snprintf(outstr, 39, HPHRASE, voltageString, "mV");  
-		  sms(outstr, num);
-    }
+		if (parseVolt()) {
+			snprintf(outstr, 39, HPHRASE, voltageString, "mV");  
+			sms(outstr, num);
+		}
 	} 
 
 
@@ -96,11 +96,11 @@ class SMSManager {
 		readData();
 	} 
 
-  void inCycle(){
-    inputString[0]='\0';
-    if(!sm_w->available()) return;      
-    readData();
-  } 
+	void inCycle(){
+		inputString[0]='\0';
+		if(!sm_w->available()) return;      
+		readData();
+	} 
 
 	private: 
 	char incomingByte; 
@@ -117,7 +117,7 @@ class SMSManager {
 	int parseVolt(){
 		char * s, * e;
 		char number [14];
-    voltageString[0]='\0';
+		voltageString[0]='\0';
 		s = strstr(inputString, VOLTSIGN);
 		if (s) s = strstr(s+1, ",");
 		if (s) s = strstr(s+1, ",");
@@ -136,15 +136,15 @@ class SMSManager {
 	int waitOK(){
 		unsigned long _timeout = millis() + TIMEOUT;
 		while (!sm_w->available() && millis() < _timeout)  {};  
-    if (!sm_w->available()) return 0;
+		if (!sm_w->available()) return 0;
 		delay(400);                     
-    return 1;                    
+		return 1;                    
 	}
 
 	int parseNum(){
 		char * s;
 		char number [14];
-    numberString[0]='\0';
+		numberString[0]='\0';
 		s = strstr(inputString, "+CMT:");
 		if (s) s = strstr(s, NUMSIGN);
 		if(s) {
