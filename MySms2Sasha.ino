@@ -142,7 +142,11 @@ void loop() {
        waitOK();                                     
        readData();  
         
-       //Case1 (command to measure)         
+       //
+       //Actions list:
+       //
+    
+       // - Case-1 (Measure temp)         
        if (strstr(inputString, CODESMS))  { 
           LOG_ON("input: ", inputString);  
           int res=parseNum(inputString);
@@ -153,7 +157,7 @@ void loop() {
           }
        }
        
-       //Case2 (HealthChech)
+       // - Case-2 (HealthChech)
        if (strstr(inputString, CODEHEALTH))  {   
           LOG_ON("input: ", inputString);  
           int res=parseNum(inputString);
@@ -170,7 +174,7 @@ void loop() {
           } 
        }
        
-       //Default case (Clear SMSs and buffer)
+       // - Default case (Clear SMSs and buffer)
        if (!strstr(inputString, "OK")){    
         altSerial.println("AT+CMGDA=\"DEL ALL\"");      
         waitOK(); 
