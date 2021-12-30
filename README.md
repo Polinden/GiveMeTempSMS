@@ -1,7 +1,7 @@
 # GiveMeTempSMS
 
 
-<img src="Schema.png" width=700/>
+<img src="Schema.png" width=650/>
 
 
 ## MOTIVATION
@@ -32,7 +32,7 @@ class MySMS : public SMSManager {           // <----inherit
 	void inCycle(){                     // <----override
 	SMSManager::inCycle();
 
-	/Case1-> If SMS contains the first token   
+	//Case1-> If SMS contains the first token   
 	if (strstr(this->getRowData(), TOKEN1))  { 
 	        //switch a relay, ask sensors, etc...  
                 //then create a resonse
