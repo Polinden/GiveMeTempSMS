@@ -1,7 +1,7 @@
 # GiveMeTempSMS
 
 
-<img src="Schema.png" width=500/>
+<img src="Schema.png" width=600/>
 
 
 ## MOTIVATION
@@ -25,25 +25,25 @@ sending back the requested data. In my friends' case - temperature measured.
 
 You can create any action youself following the snippet bellow
 ```c++
-class MySMS : public SMSManager {                   // <----inherit 
-	      public:
-		using SMSManager::SMSManager;
+class MySMS : public SMSManager {           // <----inherit 
+   public:
+	using SMSManager::SMSManager;
 
-		void inCycle(){                     // <----override
-			SMSManager::inCycle();
+	void inCycle(){                     // <----override
+	SMSManager::inCycle();
 
-			//Case1-> If SMS contains the first token   
-			if (strstr(this->getRowData(), TOKEN1))  { 
-	                        //switch a relay, ask sensors, etc...  
-                                //then create a resonse
-				this->sms(RESPONSE1, this->getNumber()); 
-			}
+	//Case1-> If SMS contains the first token   
+	if (strstr(this->getRowData(), TOKEN1))  { 
+	        //switch a relay, ask sensors, etc...  
+                //then create a resonse
+		this->sms(RESPONSE1, this->getNumber()); 
+	}
 
-			//Case2-> If SMS contains the next token   
-			if (strstr(this->getRowData(), TOKEN2))  {...}	
+	//Case2-> If SMS contains the next token   
+	if (strstr(this->getRowData(), TOKEN2))  {...}	
                      
                      
-                        //Case3...
+        //Case3...
 };
 
 ```
