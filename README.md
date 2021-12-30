@@ -25,25 +25,25 @@ sending back the requested data. In my friends' case - temperature measured.
 
 You can create any action youself following the snippet bellow
 ```c++
-class MySMS : public SMSManager {    // <----inherit from SMSManager class
-	public:
+class MySMS : public SMSManager {                   // <----inherit 
+	      public:
 		using SMSManager::SMSManager;
 
-		void inCycle(){        // <----override
+		void inCycle(){                     // <----override
 			SMSManager::inCycle();
 
-			//Case1. If SMS contains your token   
+			//Case1-> If SMS contains the first token   
 			if (strstr(this->getRowData(), TOKEN1))  { 
-	                     //do a job, ask the sensors, etc...  
-                            //create a resonse
+	                        //switch a relay, ask sensors, etc...  
+                                //then create a resonse
 				this->sms(RESPONSE1, this->getNumber()); 
 			}
 
-			//Case2. If SMS contains your token   
+			//Case2-> If SMS contains the next token   
 			if (strstr(this->getRowData(), TOKEN2))  {...}	
                      
                      
-                     //Case3...
+                        //Case3...
 };
 
 ```
