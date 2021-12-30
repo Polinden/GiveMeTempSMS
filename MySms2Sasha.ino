@@ -9,6 +9,7 @@
 #define CODEHEALTH "VOLT"
 #define PHRASE "Hello, Dude! Temp =%sC"
 #define PHRASELEN 35
+#define TIMEOUT 10000
 
 
 AltSoftSerial altSerial;
@@ -27,9 +28,9 @@ class MySMS : public SMSManager {
 			if (strstr(this->getRowData(), CODESMS))  { 
 				temp = sht20.readTemperature();
 				char answer[PHRASELEN];
-				char outstr[10];  
-				dtostrf(temp, 6, 1, outstr); 
-				snprintf(answer, PHRASELEN-1, PHRASE, outstr);    
+				char tempstr[10];  
+				dtostrf(temp, 6, 1, tempstr); 
+				snprintf(answer, PHRASELEN-1, PHRASE, tempstr);    
 				this->sms(answer, this->getNumber()); 
 			}
 

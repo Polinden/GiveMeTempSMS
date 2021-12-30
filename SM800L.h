@@ -9,7 +9,6 @@ class SMSManager {
 #define BUFFSIZE 200
 #define VOLTSIGN "+CBC:"
 #define NUMSIGN "+380"
-#define TIMEOUT 10000
 #define HPHRASE "HealthCheck! Power = %s%s"
 
 	Stream * sm_w, * sm_d;
@@ -42,7 +41,7 @@ class SMSManager {
 
 	void sms(String text, const char * phone)  
 	{
-		char * phones="AT+CMGS=\"+380663539598\"\0";
+		char * phones="AT+CMGS=\"+380503118207\"\0";
 		memcpy(phones+9, phone, 13);
 		printLn(phones, sm_w);
 		readData();
@@ -134,7 +133,7 @@ class SMSManager {
 	}
 
 	int waitOK(){
-		unsigned long _timeout = millis() + TIMEOUT;
+		unsigned long _timeout = millis() + timeout;
 		while (!sm_w->available() && millis() < _timeout)  {};  
 		if (!sm_w->available()) return 0;
 		delay(400);                     
