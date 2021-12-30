@@ -1,7 +1,7 @@
 # GiveMeTempSMS
 
 
-<img src="Schema.png" width=500/>
+<img src="Schema.png" width=600/>
 
 
 ## MOTIVATION
