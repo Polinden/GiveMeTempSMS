@@ -21,7 +21,7 @@ sending back the requested data. In my friends' case - temperature measured.
 - Power supply and miscellaneous
 
 
-## YOUR ACTIONS
+## COOKBOOK 
 
 You can create any action youself following the snippet bellow
 ```c++
@@ -48,7 +48,7 @@ class MySMS : public SMSManager {           // <----inherit
 
 ```
 
-## Enjoy
+## ENJOY
 We hope you will be interested in repeating this project
 
 ## TODO
